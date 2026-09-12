@@ -5,9 +5,8 @@ const rooms = [
     price: "₱3,500",
     description:
       "A comfortable room designed for a relaxing and convenient stay.",
-    details:
-      "The Standard Room features a Queen Bed, bedside tables, a relaxing view, comfort room, and a convenient desk and coffee area.",
-    features: ["Queen Bed", "Private Comfort Room", "Desk & Coffee Area", "View"],
+    image:
+      "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1200&q=80",
   },
   {
     slug: "superior",
@@ -15,15 +14,8 @@ const rooms = [
     price: "₱4,500",
     description:
       "A spacious accommodation with additional space for relaxation.",
-    details:
-      "The Superior Room features a Queen Bed, a large view, private comfort room, desk and coffee area, and a cozy sitting area.",
-    features: [
-      "Queen Bed",
-      "Large View",
-      "Private Comfort Room",
-      "Sitting Area",
-      "Desk & Coffee Area",
-    ],
+    image:
+      "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=1200&q=80",
   },
   {
     slug: "deluxe",
@@ -31,119 +23,88 @@ const rooms = [
     price: "₱6,000",
     description:
       "A refined room offering more space and premium features.",
-    details:
-      "The Deluxe Room features a King Bed, large view, private comfort room with bathtub, desk and coffee area, sitting area, and a private balcony.",
-    features: [
-      "King Bed",
-      "Private Balcony",
-      "Bathtub",
-      "Sitting Area",
-      "Desk & Coffee Area",
-    ],
+    image:
+      "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1200&q=80",
+  },
+];
+
+const experiences = [
+  {
+    title: "Comfortable Rooms",
+    text: "Thoughtfully arranged spaces designed for rest and relaxation.",
   },
   {
-    slug: "executive",
-    name: "Executive Room",
-    price: "₱8,000",
-    description:
-      "A premium accommodation offering generous space and comfort.",
-    details:
-      "The Executive Room features a King Bed, large view, private comfort room, desk and coffee area, spacious sitting area and a private balcony.",
-    features: [
-      "King Bed",
-      "Premium Space",
-      "Large View",
-      "Sitting Area",
-      "Desk & Coffee Area",
-      "Private Balcony",
-    ],
+    title: "Dining",
+    text: "Enjoy convenient dining options and a warm welcome during your stay.",
   },
   {
-    slug: "suite",
-    name: "Suite Room",
-    price: "₱10,000",
-    description:
-      "A spacious and luxurious accommodation designed for guests seeking extra comfort and privacy.",
-    details:
-      "The Suite Room offers a generous space with a King Bed, separate living area, large view, private comfort room, desk and coffee area, premium amenities and a private balcony.",
-    features: [
-      "King Bed",
-      "Separate Living Area",
-      "Large View",
-      "Private Comfort Room",
-      "Desk & Coffee Area",
-      "Premium Space",
-      "Private Balcony",
-    ],
+    title: "Pool & Recreation",
+    text: "Take time to unwind and enjoy resort-style experiences by the pool.",
+  },
+  {
+    title: "Guest Services",
+    text: "Friendly assistance to make your stay easier, smoother, and more memorable.",
   },
 ];
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-[#f8f6f1] text-[#1c1c1c]">
-
-      {/* Header */}
-      <header className="border-b border-black/10 bg-[#f8f6f1]">
+    <main className="min-h-screen bg-[#f7f2ea] text-[#1f2d2b]">
+      <header className="border-b border-[#1f2d2b]/10 bg-[#f7f2ea] backdrop-blur-sm">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
-
           <a href="/" className="group">
-            <h1 className="text-xl font-semibold tracking-[0.2em]">
+            <h1 className="text-xl font-semibold tracking-[0.2em] text-[#1b2f2c]">
               Valére Haven
             </h1>
-
-            <p className="mt-1 text-[10px] tracking-[0.3em] text-black/50">
+            <p className="mt-1 text-[10px] tracking-[0.32em] text-[#5d6d68]">
               HOTEL & RESORT
             </p>
           </a>
 
           <nav className="hidden items-center gap-8 text-sm md:flex">
-
-            <a href="/" className="font-medium">
+            <a href="/" className="font-medium text-[#1b2f2c]">
               Home
             </a>
-
-            <a href="/rooms" className="hover:text-black/50">
+            <a href="/rooms" className="text-[#3d4f4a] transition hover:text-[#1b2f2c]">
               Rooms
             </a>
-
-            <a href="#experience" className="hover:text-black/50">
+            <a href="#experience" className="text-[#3d4f4a] transition hover:text-[#1b2f2c]">
               Experience
             </a>
-
-            <a href="#about" className="hover:text-black/50">
+            <a href="#about" className="text-[#3d4f4a] transition hover:text-[#1b2f2c]">
               About
             </a>
-
-            <a href="#contact" className="hover:text-black/50">
+            <a href="#contact" className="text-[#3d4f4a] transition hover:text-[#1b2f2c]">
               Contact
             </a>
-
             <a
               href="/booking/availability"
-              className="bg-[#1c1c1c] px-5 py-3 text-white"
+              className="bg-[#163d36] px-5 py-3 text-sm text-[#f7f2ea] shadow-sm transition hover:bg-[#102923]"
             >
               Book Now
             </a>
-
           </nav>
 
           <a
             href="/booking/availability"
-            className="bg-[#1c1c1c] px-4 py-2 text-sm text-white md:hidden"
+            className="bg-[#163d36] px-4 py-2 text-sm text-[#f7f2ea] md:hidden"
           >
             Book
           </a>
-
         </div>
       </header>
 
-
-      {/* Hero */}
-      <section className="relative bg-[#252525] px-6 py-32 text-white md:py-44">
-
+      <section
+        className="relative overflow-hidden bg-[#102923] px-6 py-32 text-white md:py-44"
+        style={{
+          backgroundImage:
+            "linear-gradient(rgba(16,41,35,0.72), rgba(16,41,35,0.5)), url('https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1600&q=80')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      >
         <div className="mx-auto max-w-7xl">
-
-          <p className="text-xs tracking-[0.35em] text-white/50">
+          <p className="text-xs tracking-[0.35em] text-white/70">
             VALÉRE HAVEN HOTEL & RESORT
           </p>
 
@@ -151,330 +112,147 @@ export default function Home() {
             A stay designed around you.
           </h2>
 
-          <p className="mt-7 max-w-2xl text-base leading-7 text-white/60">
-            Experience comfort, thoughtful service, and a relaxing
-            atmosphere at Valére Haven.
+          <p className="mt-7 max-w-2xl text-base leading-7 text-white/75">
+            Experience comfort, thoughtful service, and a relaxing atmosphere at Valére Haven.
           </p>
 
-          <a
-            href="/booking/availability"
-            className="mt-9 inline-block bg-white px-7 py-4 text-sm font-medium text-[#1c1c1c]"
-          >
-            Check Availability
-          </a>
-
+          <div className="mt-9 flex flex-wrap gap-4">
+            <a
+              href="/booking/availability"
+              className="inline-block bg-[#f3d7a8] px-7 py-4 text-sm font-medium text-[#163d36] transition hover:bg-[#ebc88e]"
+            >
+              Check Availability
+            </a>
+            <a
+              href="/rooms"
+              className="inline-block border border-white/50 bg-white/5 px-7 py-4 text-sm font-medium text-white backdrop-blur-sm transition hover:bg-white/10"
+            >
+              View Rooms
+            </a>
+          </div>
         </div>
-
       </section>
 
-
-      {/* Introduction */}
       <section className="px-6 py-24">
-
-        <div className="mx-auto grid max-w-7xl gap-12 md:grid-cols-2">
-
+        <div className="mx-auto grid max-w-7xl gap-12 md:grid-cols-[1fr_1.2fr] md:items-center">
           <div>
-            <p className="text-xs tracking-[0.3em] text-black/40">
-              WELCOME
-            </p>
-
-            <h2 className="mt-5 text-4xl font-light leading-tight md:text-5xl">
+            <p className="text-xs tracking-[0.3em] text-[#5d6d68]">WELCOME</p>
+            <h2 className="mt-5 text-4xl font-light leading-tight md:text-5xl text-[#163d36]">
               Comfort made simple.
             </h2>
           </div>
 
           <div className="max-w-xl">
-            <p className="leading-8 text-black/60">
-              Valére Haven is designed to provide guests with a
-              comfortable and memorable stay. From thoughtfully
-              designed rooms to attentive guest services, every
-              detail is created with your experience in mind.
+            <p className="leading-8 text-[#48615d]">
+              Valére Haven is designed to provide guests with a comfortable and memorable stay. From thoughtfully designed rooms to attentive guest services, every detail is created with your experience in mind.
             </p>
           </div>
-
         </div>
-
       </section>
 
-
-      {/* Rooms */}
-      <section className="border-y border-black/10 px-6 py-24">
-
+      <section className="border-y border-[#1f2d2b]/10 bg-[#f3eee6] px-6 py-24">
         <div className="mx-auto max-w-7xl">
-
-          <p className="text-xs tracking-[0.3em] text-black/40">
-            ACCOMMODATION
-          </p>
+          <p className="text-xs tracking-[0.3em] text-[#5d6d68]">ACCOMMODATION</p>
 
           <div className="mt-5 flex flex-col justify-between gap-6 md:flex-row md:items-end">
-
-            <h2 className="max-w-2xl text-4xl font-light md:text-5xl">
+            <h2 className="max-w-2xl text-4xl font-light text-[#163d36] md:text-5xl">
               Rooms for every kind of stay.
             </h2>
-
-            <a
-              href="/rooms"
-              className="text-sm underline underline-offset-4"
-            >
+            <a href="/rooms" className="text-sm text-[#163d36] underline underline-offset-4">
               View all rooms
             </a>
-
           </div>
-
 
           <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-
-            {/* Standard */}
-            <a
-              href="/rooms/standard"
-              className="group border border-black/10 bg-white"
-            >
-              <div className="flex h-64 items-center justify-center bg-[#dedbd3]">
-                <span className="text-xs tracking-[0.25em] text-black/40">
-                  STANDARD ROOM
-                </span>
-              </div>
-
-              <div className="p-7">
-
-                <div className="flex justify-between gap-4">
-
-                  <h3 className="text-2xl font-light">
-                    Standard Room
-                  </h3>
-
-                  <span className="text-sm">
-                    ₱3,500
-                  </span>
-
+            {rooms.map((room) => (
+              <a
+                key={room.slug}
+                href={`/rooms/${room.slug}`}
+                className="group overflow-hidden border border-[#1f2d2b]/10 bg-[#fffdf9] shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
+              >
+                <div className="h-64 overflow-hidden">
+                  <img
+                    src={room.image}
+                    alt={room.name}
+                    className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
+                  />
                 </div>
 
-                <p className="mt-4 text-sm leading-6 text-black/50">
-                  A comfortable room designed for a relaxing and
-                  convenient stay.
-                </p>
+                <div className="p-7">
+                  <div className="flex items-start justify-between gap-4">
+                    <h3 className="text-2xl font-light text-[#163d36]">{room.name}</h3>
+                    <span className="text-sm text-[#163d36]">{room.price}</span>
+                  </div>
 
-              </div>
-            </a>
-
-
-            {/* Superior */}
-            <a
-              href="/rooms/superior"
-              className="group border border-black/10 bg-white"
-            >
-              <div className="flex h-64 items-center justify-center bg-[#d4d0c7]">
-                <span className="text-xs tracking-[0.25em] text-black/40">
-                  SUPERIOR ROOM
-                </span>
-              </div>
-
-              <div className="p-7">
-
-                <div className="flex justify-between gap-4">
-
-                  <h3 className="text-2xl font-light">
-                    Superior Room
-                  </h3>
-
-                  <span className="text-sm">
-                    ₱4,500
-                  </span>
-
+                  <p className="mt-4 text-sm leading-6 text-[#5d6d68]">{room.description}</p>
                 </div>
-
-                <p className="mt-4 text-sm leading-6 text-black/50">
-                  A spacious accommodation with additional space
-                  for relaxation.
-                </p>
-
-              </div>
-            </a>
-
-
-            {/* Deluxe */}
-            <a
-              href="/rooms/deluxe"
-              className="group border border-black/10 bg-white"
-            >
-              <div className="flex h-64 items-center justify-center bg-[#dedbd3]">
-                <span className="text-xs tracking-[0.25em] text-black/40">
-                  DELUXE ROOM
-                </span>
-              </div>
-
-              <div className="p-7">
-
-                <div className="flex justify-between gap-4">
-
-                  <h3 className="text-2xl font-light">
-                    Deluxe Room
-                  </h3>
-
-                  <span className="text-sm">
-                    ₱6,000
-                  </span>
-
-                </div>
-
-                <p className="mt-4 text-sm leading-6 text-black/50">
-                  A refined room offering more space and premium
-                  features.
-                </p>
-
-              </div>
-            </a>
-
+              </a>
+            ))}
           </div>
-
         </div>
-
       </section>
 
-
-      {/* Experience */}
       <section id="experience" className="px-6 py-24">
-
         <div className="mx-auto max-w-7xl">
-
-          <p className="text-xs tracking-[0.3em] text-black/40">
-            EXPERIENCE
-          </p>
-
-          <h2 className="mt-5 max-w-3xl text-4xl font-light md:text-5xl">
+          <p className="text-xs tracking-[0.3em] text-[#5d6d68]">EXPERIENCE</p>
+          <h2 className="mt-5 max-w-3xl text-4xl font-light text-[#163d36] md:text-5xl">
             Everything you need for a comfortable stay.
           </h2>
 
+          <div className="mt-14 grid gap-px bg-[#1f2d2b]/10 md:grid-cols-2 lg:grid-cols-4">
+            {experiences.map((item) => (
+              <div key={item.title} className="bg-[#f7f2ea] p-8">
+                <h3 className="text-xl font-light text-[#163d36]">{item.title}</h3>
+                <p className="mt-4 text-sm leading-6 text-[#5d6d68]">{item.text}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
-          <div className="mt-14 grid gap-px bg-black/10 md:grid-cols-2 lg:grid-cols-4">
-
-            <div className="bg-[#f8f6f1] p-8">
-              <h3 className="text-xl font-light">
-                Comfortable Rooms
-              </h3>
-
-              <p className="mt-4 text-sm leading-6 text-black/50">
-                Thoughtfully arranged spaces designed for rest
-                and relaxation.
-              </p>
-            </div>
-
-
-            <div className="bg-[#f8f6f1] p-8">
-              <h3 className="text-xl font-light">
-                Dining
-              </h3>
-
-              <p className="mt-4 text-sm leading-6 text-black/50">
-                Enjoy convenient dining options during your stay.
-              </p>
-            </div>
-
-
-            <div className="bg-[#f8f6f1] p-8">
-              <h3 className="text-xl font-light">
-                Pool & Recreation
-              </h3>
-
-              <p className="mt-4 text-sm leading-6 text-black/50">
-                Take time to relax, unwind, and enjoy recreational
-                activities.
-              </p>
-            </div>
-
-
-            <div className="bg-[#f8f6f1] p-8">
-              <h3 className="text-xl font-light">
-                Guest Services
-              </h3>
-
-              <p className="mt-4 text-sm leading-6 text-black/50">
-                Friendly assistance to help make your stay easier
-                and more comfortable.
-              </p>
-            </div>
-
+      <section id="about" className="bg-[#163d36] px-6 py-24 text-white">
+        <div className="mx-auto grid max-w-7xl gap-10 md:grid-cols-[1.2fr_0.8fr] md:items-center">
+          <div>
+            <p className="text-xs tracking-[0.3em] text-white/60">ABOUT VALÉRE HAVEN</p>
+            <h2 className="mt-5 max-w-3xl text-4xl font-light leading-tight md:text-5xl">
+              A place to slow down, rest, and feel at home.
+            </h2>
+            <p className="mt-7 max-w-2xl leading-8 text-white/75">
+              Valére Haven combines comfortable accommodations, thoughtful spaces, and welcoming service to create a pleasant experience for every guest.
+            </p>
           </div>
 
+          <div className="overflow-hidden rounded-2xl border border-white/10 shadow-xl">
+            <img
+              src="https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80"
+              alt="Resort pool and terrace"
+              className="h-[420px] w-full object-cover"
+            />
+          </div>
         </div>
-
       </section>
 
-
-      {/* About */}
-      <section id="about" className="bg-[#252525] px-6 py-24 text-white">
-
-        <div className="mx-auto max-w-7xl">
-
-          <p className="text-xs tracking-[0.3em] text-white/40">
-            ABOUT VALÉRE HAVEN
-          </p>
-
-          <h2 className="mt-5 max-w-3xl text-4xl font-light leading-tight md:text-5xl">
-            A place to slow down, rest, and feel at home.
-          </h2>
-
-          <p className="mt-7 max-w-2xl leading-8 text-white/60">
-            Valére Haven combines comfortable accommodations,
-            thoughtful spaces, and welcoming service to create a
-            pleasant experience for every guest.
-          </p>
-
-        </div>
-
-      </section>
-
-
-      {/* Booking CTA */}
       <section className="px-6 py-24 text-center">
-
-        <p className="text-xs tracking-[0.3em] text-black/40">
-          PLAN YOUR STAY
-        </p>
-
-        <h2 className="mx-auto mt-5 max-w-2xl text-4xl font-light md:text-5xl">
+        <p className="text-xs tracking-[0.3em] text-[#5d6d68]">PLAN YOUR STAY</p>
+        <h2 className="mx-auto mt-5 max-w-2xl text-4xl font-light text-[#163d36] md:text-5xl">
           Your comfortable stay starts here.
         </h2>
-
-        <a
-          href="/booking/availability"
-          className="mt-9 inline-block bg-[#1c1c1c] px-7 py-4 text-sm text-white"
-        >
+        <a href="/booking/availability" className="mt-9 inline-block bg-[#163d36] px-7 py-4 text-sm text-[#f7f2ea] transition hover:bg-[#102923]">
           Book Your Stay
         </a>
-
       </section>
 
-
-      {/* Footer */}
-      <footer id="contact" className="border-t border-black/10 px-6 py-12">
-
+      <footer id="contact" className="border-t border-[#1f2d2b]/10 px-6 py-12">
         <div className="mx-auto max-w-7xl">
+          <h3 className="font-semibold tracking-[0.2em] text-[#163d36]">Valére Haven</h3>
+          <p className="mt-2 text-sm text-[#5d6d68]">Hotel & Resort</p>
 
-          <h3 className="font-semibold tracking-[0.2em]">
-            Valére Haven
-          </h3>
-
-          <p className="mt-2 text-sm text-black/50">
-            Hotel & Resort
-          </p>
-
-          <div className="mt-8 flex flex-col gap-2 text-sm text-black/50 md:flex-row md:gap-8">
-
-            <span>
-              reservations@valerehaven.com
-            </span>
-
-            <span>
-              +63 900 000 0000
-            </span>
-
+          <div className="mt-8 flex flex-col gap-2 text-sm text-[#5d6d68] md:flex-row md:gap-8">
+            <span>reservations@valerehaven.com</span>
+            <span>+63 900 000 0000</span>
           </div>
-
         </div>
-
       </footer>
-
     </main>
   );
 }

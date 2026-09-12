@@ -8,6 +8,8 @@ const rooms = [
     details:
       "The Standard Room features a Queen Bed, bedside tables, a relaxing view, comfort room, and a convenient desk and coffee area.",
     features: ["Queen Bed", "Private Comfort Room", "Desk & Coffee Area", "View"],
+    image:
+      "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1200&q=80",
   },
   {
     slug: "superior",
@@ -24,6 +26,8 @@ const rooms = [
       "Sitting Area",
       "Desk & Coffee Area",
     ],
+    image:
+      "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=1200&q=80",
   },
   {
     slug: "deluxe",
@@ -40,6 +44,8 @@ const rooms = [
       "Sitting Area",
       "Desk & Coffee Area",
     ],
+    image:
+      "https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=1200&q=80",
   },
   {
     slug: "executive",
@@ -57,6 +63,8 @@ const rooms = [
       "Desk & Coffee Area",
       "Private Balcony",
     ],
+    image:
+      "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1200&q=80",
   },
   {
     slug: "suite",
@@ -75,186 +83,100 @@ const rooms = [
       "Premium Space",
       "Private Balcony",
     ],
+    image:
+      "https://images.unsplash.com/photo-1445019980597-93fa8acb246c?auto=format&fit=crop&w=1200&q=80",
   },
 ];
 
-export default function RoomsPage() {
+export default async function RoomDetailPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const room = rooms.find((item) => item.slug === slug) ?? rooms[0];
+
   return (
-    <main className="min-h-screen bg-[#f8f6f1] text-[#1c1c1c]">
-      {/* Header */}
-      <header className="border-b border-black/10 bg-[#f8f6f1]">
+    <main className="min-h-screen bg-[#f7f2ea] text-[#1f2d2b]">
+      <header className="border-b border-[#1f2d2b]/10 bg-[#f7f2ea]">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
           <a href="/" className="group">
-            <h1 className="text-xl font-semibold tracking-[0.2em]">
+            <h1 className="text-xl font-semibold tracking-[0.2em] text-[#1b2f2c]">
               Valére Haven
             </h1>
-            <p className="mt-1 text-[10px] tracking-[0.3em] text-black/50">
+            <p className="mt-1 text-[10px] tracking-[0.3em] text-[#5d6d68]">
               HOTEL & RESORT
             </p>
           </a>
 
           <nav className="hidden items-center gap-8 text-sm md:flex">
-            <a href="/" className="hover:text-black/50">
+            <a href="/" className="text-[#3d4f4a] transition hover:text-[#1b2f2c]">
               Home
             </a>
-
-            <a href="/rooms" className="font-medium">
+            <a href="/rooms" className="font-medium text-[#1b2f2c]">
               Rooms
             </a>
-
-            <a href="/#experience" className="hover:text-black/50">
-              Experience
-            </a>
-
-            <a href="/#about" className="hover:text-black/50">
-              About
-            </a>
-
-            <a href="/#contact" className="hover:text-black/50">
-              Contact
-            </a>
-
-            <a
-              href="/booking/availability"
-              className="bg-[#1c1c1c] px-5 py-3 text-white"
-            >
+            <a href="/booking/availability" className="bg-[#163d36] px-5 py-3 text-white shadow-sm hover:bg-[#102923]">
               Book Now
             </a>
           </nav>
-
-          <a
-            href="/booking/availability"
-            className="bg-[#1c1c1c] px-4 py-2 text-sm text-white md:hidden"
-          >
-            Book
-          </a>
         </div>
       </header>
 
-      {/* Page Introduction */}
-      <section className="px-6 py-24">
-        <div className="mx-auto max-w-7xl">
-          <p className="text-xs tracking-[0.3em] text-black/50">
-            ACCOMMODATION
-          </p>
+      <section className="px-6 py-16 md:py-20">
+        <div className="mx-auto max-w-6xl overflow-hidden border border-[#1f2d2b]/10 bg-[#fffdf9] shadow-sm">
+          <div className="grid md:grid-cols-2">
+            <div className="min-h-[420px] overflow-hidden">
+              <img
+                src={room.image}
+                alt={room.name}
+                className="h-full w-full object-cover"
+              />
+            </div>
 
-          <h2 className="mt-5 max-w-3xl text-5xl font-light leading-tight md:text-6xl">
-            Find the room that feels right for you.
-          </h2>
+            <div className="flex flex-col justify-center p-8 md:p-12">
+              <p className="text-xs tracking-[0.25em] text-[#5d6d68]">ROOM DETAILS</p>
+              <h1 className="mt-4 text-4xl font-light text-[#163d36] md:text-5xl">
+                {room.name}
+              </h1>
 
-          <p className="mt-7 max-w-2xl text-base leading-7 text-black/60">
-            Explore our accommodations and choose a space designed around
-            comfort, relaxation, and a memorable stay at Valere Haven.
-          </p>
-        </div>
-      </section>
-
-      {/* Room List */}
-      <section className="px-6 pb-24">
-        <div className="mx-auto max-w-7xl space-y-10">
-          {rooms.map((room, index) => (
-            <article
-              key={room.name}
-              className="grid overflow-hidden border border-black/10 bg-white md:grid-cols-2"
-            >
-              {/* Image Placeholder */}
-              <div
-                className={`flex min-h-[360px] items-center justify-center ${
-                  index % 2 === 0
-                    ? "bg-[#dedbd3]"
-                    : "bg-[#d4d0c7]"
-                }`}
-              >
-                <span className="text-xs tracking-[0.25em] text-black/40">
-                  {room.name.toUpperCase()}
-                </span>
+              <div className="mt-6 flex items-end gap-4">
+                <span className="text-3xl font-medium text-[#163d36]">{room.price}</span>
+                <span className="text-sm text-[#5d6d68]">per night</span>
               </div>
 
-              {/* Room Information */}
-              <div className="flex flex-col justify-center p-8 md:p-12">
-                <div className="flex flex-wrap items-start justify-between gap-4">
-                  <div>
-                    <p className="text-xs tracking-[0.25em] text-black/40">
-                      ROOM {String(index + 1).padStart(2, "0")}
-                    </p>
+              <p className="mt-6 leading-7 text-[#47615d]">{room.description}</p>
+              <p className="mt-4 text-sm leading-7 text-[#5d6d68]">{room.details}</p>
 
-                    <h3 className="mt-3 text-3xl font-light">
-                      {room.name}
-                    </h3>
+              <div className="mt-8 grid gap-3 border-t border-[#1f2d2b]/10 pt-6">
+                {room.features.map((feature) => (
+                  <div key={feature} className="flex items-center gap-3 text-sm text-[#39514d]">
+                    <span className="h-2 w-2 rounded-full bg-[#d4b07a]" />
+                    {feature}
                   </div>
+                ))}
+              </div>
 
-                  <div className="text-right">
-                    <p className="text-lg font-medium">{room.price}</p>
-                    <p className="text-xs text-black/50">per night</p>
-                  </div>
-                </div>
-
-                <p className="mt-6 leading-7 text-black/60">
-                  {room.description}
-                </p>
-
-                <p className="mt-4 text-sm leading-6 text-black/50">
-                  {room.details}
-                </p>
-
-                {/* Features */}
-                <div className="mt-7 grid grid-cols-2 gap-y-3 border-t border-black/10 pt-6">
-                  {room.features.map((feature) => (
-                    <div
-                      key={feature}
-                      className="flex items-center gap-2 text-sm text-black/60"
-                    >
-                      <span className="h-1 w-1 rounded-full bg-black/50" />
-                      {feature}
-                    </div>
-                  ))}
-                </div>
-
+              <div className="mt-10 flex flex-wrap gap-4">
+                <a href="/rooms" className="inline-block border border-[#1f2d2b]/20 px-6 py-3 text-sm text-[#163d36] hover:border-[#163d36]">
+                  Back to Rooms
+                </a>
                 <a
-                  href={`/rooms/${room.slug}`}
-                  className="mt-8 inline-block w-fit bg-[#1c1c1c] px-6 py-3 text-sm text-white"
+                  href={`/booking/availability?room=${room.slug}`}
+                  className="inline-block bg-[#163d36] px-6 py-3 text-sm text-[#f7f2ea] hover:bg-[#102923]"
                 >
-                  View Room
+                  Book This Room
                 </a>
               </div>
-            </article>
-          ))}
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* Bottom CTA */}
-      <section className="bg-[#252525] px-6 py-20 text-center text-white">
-        <p className="text-xs tracking-[0.3em] text-white/50">
-          PLAN YOUR STAY
-        </p>
-
-        <h2 className="mx-auto mt-5 max-w-2xl text-4xl font-light md:text-5xl">
-          Your comfortable stay starts here.
-        </h2>
-
-        <a
-          href="/booking/availability"
-          className="mt-8 inline-block bg-white px-7 py-4 text-sm font-medium text-[#1c1c1c]"
-        >
-          Check Availability
-        </a>
-      </section>
-
-      {/* Footer */}
-      <footer className="border-t border-black/10 px-6 py-12">
+      <footer className="border-t border-[#1f2d2b]/10 px-6 py-12">
         <div className="mx-auto max-w-7xl">
-          <h3 className="font-semibold tracking-[0.2em]">
-            Valére Haven
-          </h3>
-
-          <p className="mt-2 text-sm text-black/50">
-            Hotel & Resort
-          </p>
-
-          <div className="mt-8 flex flex-col gap-2 text-sm text-black/50 md:flex-row md:gap-8">
-            <span>reservations@valerehaven.com</span>
-            <span>+63 900 000 0000</span>
-          </div>
+          <h3 className="font-semibold tracking-[0.2em] text-[#163d36]">Valére Haven</h3>
+          <p className="mt-2 text-sm text-[#5d6d68]">Hotel & Resort</p>
         </div>
       </footer>
     </main>
