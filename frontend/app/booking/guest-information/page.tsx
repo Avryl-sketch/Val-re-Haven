@@ -1,10 +1,10 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useState, Suspense } from "react";
 
-export default function GuestInformationPage() {
-    const searchParams = useSearchParams();
+function GuestInformationForm() {
+  const searchParams = useSearchParams();
 
   const room = searchParams.get("room") || "";
   const checkIn = searchParams.get("checkIn") || "";
@@ -18,29 +18,29 @@ export default function GuestInformationPage() {
   const [specialRequest, setSpecialRequest] = useState("");
 
   function handleContinue() {
-  if (!firstName || !lastName || !email || !phone) {
-    alert("Please complete all required fields.");
-    return;
-  }
+    if (!firstName || !lastName || !email || !phone) {
+      alert("Please complete all required fields.");
+      return;
+    }
 
-  const guestInformation = {
-    room,
-    checkIn,
-    checkOut,
-    guests,
-    firstName,
-    lastName,
-    email,
-    phone,
-    specialRequest,
-  };
+    const guestInformation = {
+      room,
+      checkIn,
+      checkOut,
+      guests,
+      firstName,
+      lastName,
+      email,
+      phone,
+      specialRequest,
+    };
 
-  sessionStorage.setItem(
-    "valereReservation",
-    JSON.stringify(guestInformation)
-  );
+    sessionStorage.setItem(
+      "valereReservation",
+      JSON.stringify(guestInformation)
+    );
 
-  window.location.href = "/booking/summary";
+    window.location.href = "/booking/summary";
   }
 
   return (
@@ -247,5 +247,21 @@ export default function GuestInformationPage() {
         </div>
       </footer>
     </main>
+  );
+}
+
+export default function GuestInformationPage() {
+  return (
+    <Suspense
+      fallback={
+        <main className="flex min-h-screen items-center justify-center bg-[#f8f6f1] text-[#1c1c1c]">
+          <p className="text-sm text-black/50">
+            Loading guest information...
+          </p>
+        </main>
+      }
+    >
+      <GuestInformationForm />
+    </Suspense>
   );
 }
