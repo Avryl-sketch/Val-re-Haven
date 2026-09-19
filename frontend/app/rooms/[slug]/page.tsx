@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 const rooms = [
   {
     slug: "standard",
@@ -100,25 +102,25 @@ export default async function RoomDetailPage({
     <main className="min-h-screen bg-[#f7f2ea] text-[#1f2d2b]">
       <header className="border-b border-[#1f2d2b]/10 bg-[#f7f2ea]">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
-          <a href="/" className="group">
+          <Link href="/" className="group">
             <h1 className="text-xl font-semibold tracking-[0.2em] text-[#1b2f2c]">
               Valére Haven
             </h1>
             <p className="mt-1 text-[10px] tracking-[0.3em] text-[#5d6d68]">
               HOTEL & RESORT
             </p>
-          </a>
+          </Link>
 
           <nav className="hidden items-center gap-8 text-sm md:flex">
-            <a href="/" className="text-[#3d4f4a] transition hover:text-[#1b2f2c]">
+            <Link href="/" className="text-[#3d4f4a] transition hover:text-[#1b2f2c]">
               Home
-            </a>
-            <a href="/rooms" className="font-medium text-[#1b2f2c]">
+            </Link>
+            <Link href="/rooms" className="font-medium text-[#1b2f2c]">
               Rooms
-            </a>
-            <a href="/booking/availability" className="bg-[#163d36] px-5 py-3 text-white shadow-sm hover:bg-[#102923]">
+            </Link>
+            <Link href="/booking/availability" className="bg-[#163d36] px-5 py-3 text-white shadow-sm hover:bg-[#102923]">
               Book Now
-            </a>
+            </Link>
           </nav>
         </div>
       </header>
@@ -158,15 +160,15 @@ export default async function RoomDetailPage({
               </div>
 
               <div className="mt-10 flex flex-wrap gap-4">
-                <a href="/rooms" className="inline-block border border-[#1f2d2b]/20 px-6 py-3 text-sm text-[#163d36] hover:border-[#163d36]">
+                <Link href="/rooms" className="inline-block border border-[#1f2d2b]/20 px-6 py-3 text-sm text-[#163d36] hover:border-[#163d36]">
                   Back to Rooms
-                </a>
-                <a
+                </Link>
+                <Link
                   href={`/booking/availability?room=${room.slug}`}
                   className="inline-block bg-[#163d36] px-6 py-3 text-sm text-[#f7f2ea] hover:bg-[#102923]"
                 >
                   Book This Room
-                </a>
+                </Link>
               </div>
             </div>
           </div>

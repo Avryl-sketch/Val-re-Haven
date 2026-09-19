@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
 type Reservation = {
+  reservationId?: string;
   room: string;
   checkIn: string;
   checkOut: string;
@@ -64,12 +66,12 @@ export default function SummaryPage() {
             Please start your reservation again.
           </p>
 
-          <a
+          <Link
             href="/booking/availability"
             className="mt-7 inline-block bg-[#1c1c1c] px-6 py-3 text-sm text-white"
           >
             Check Availability
-          </a>
+          </Link>
         </div>
       </main>
     );
@@ -90,6 +92,7 @@ export default function SummaryPage() {
 
   const roomTotal =
     selectedRoom.price * numberOfNights;
+  const depositDue = roomTotal * 0.3;
 
   function formatDate(date: string) {
     return new Date(date + "T00:00:00").toLocaleDateString(
@@ -115,7 +118,7 @@ export default function SummaryPage() {
         {/* Header */}
         <header className="border-b border-black/10 bg-[#f8f6f1]">
           <div className="mx-auto max-w-7xl px-6 py-5">
-            <a href="/">
+            <Link href="/">
               <h1 className="text-xl font-semibold tracking-[0.2em]">
                 Valére Haven
               </h1>
@@ -123,7 +126,7 @@ export default function SummaryPage() {
               <p className="mt-1 text-[10px] tracking-[0.3em] text-black/50">
                 HOTEL & RESORT
               </p>
-            </a>
+            </Link>
           </div>
         </header>
 
@@ -155,7 +158,9 @@ export default function SummaryPage() {
               </p>
 
               <p className="mt-2 text-lg font-medium tracking-wider">
-                VH-2026-00124
+                {reservation.reservationId
+                  ? `VH-${reservation.reservationId.slice(0, 8).toUpperCase()}`
+                  : "VH-PENDING"}
               </p>
             </div>
 
@@ -193,7 +198,7 @@ export default function SummaryPage() {
       <header className="border-b border-black/10 bg-[#f8f6f1]">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
 
-          <a href="/">
+          <Link href="/">
             <h1 className="text-xl font-semibold tracking-[0.2em]">
               Valére Haven
             </h1>
@@ -201,23 +206,23 @@ export default function SummaryPage() {
             <p className="mt-1 text-[10px] tracking-[0.3em] text-black/50">
               HOTEL & RESORT
             </p>
-          </a>
+          </Link>
 
           <nav className="hidden items-center gap-8 text-sm md:flex">
-            <a href="/" className="hover:text-black/50">
+            <Link href="/" className="hover:text-black/50">
               Home
-            </a>
+            </Link>
 
-            <a href="/rooms" className="hover:text-black/50">
+            <Link href="/rooms" className="hover:text-black/50">
               Rooms
-            </a>
+            </Link>
 
-            <a
+            <Link
               href="/booking/availability"
               className="font-medium"
             >
               Reservations
-            </a>
+            </Link>
           </nav>
 
         </div>
@@ -377,12 +382,12 @@ export default function SummaryPage() {
             {/* Back */}
             <div className="mt-10 border-t border-black/10 pt-7">
 
-              <a
+                <Link
                 href="/booking/guest-information"
                 className="text-sm text-black/50 hover:text-black"
               >
                 ← Back to Guest Information
-              </a>
+                </Link>
 
             </div>
 
@@ -431,9 +436,14 @@ export default function SummaryPage() {
 
             </div>
 
+            <div className="mt-4 flex items-center justify-between border-t border-black/10 pt-4 text-sm">
+              <span className="text-black/50">30% deposit due</span>
+              <span className="font-medium">₱{depositDue.toLocaleString()}</span>
+            </div>
+
             <p className="mt-3 text-xs leading-5 text-black/40">
-              Final pricing and payment options will be
-              confirmed by the hotel.
+              The deposit is recorded as unpaid until a supported payment
+              provider confirms the transaction. No card details are stored.
             </p>
 
             <button

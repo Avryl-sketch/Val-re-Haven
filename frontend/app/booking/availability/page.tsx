@@ -1,8 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
-const rooms = [
+const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000";
+
+const roomCatalog = [
   {
     name: "Standard Room",
     slug: "standard",
@@ -46,29 +50,57 @@ const rooms = [
 ];
 
 export default function AvailabilityPage() {
+  const router = useRouter();
   const [checkIn, setCheckIn] = useState("");
   const [checkOut, setCheckOut] = useState("");
   const [guests, setGuests] = useState("2");
   const [roomType, setRoomType] = useState("all");
   const [searched, setSearched] = useState(false);
+  const [availableRooms, setAvailableRooms] = useState<typeof roomCatalog>([]);
+  const [searching, setSearching] = useState(false);
+  const [error, setError] = useState("");
 
-  const availableRooms =
-    roomType === "all"
-      ? rooms
-      : rooms.filter((room) => room.slug === roomType);
+  async function handleSearch() {
+    if (!checkIn || !checkOut) {
+      alert("Please select your check-in and check-out dates.");
+      return;
+    }
 
-  function handleSearch() {
-  if (!checkIn || !checkOut) {
-    alert("Please select your check-in and check-out dates.");
-    return;
-  }
+    if (checkOut <= checkIn) {
+      alert("Check-out date must be after check-in date.");
+      return;
+    }
 
-  if (checkOut <= checkIn) {
-    alert("Check-out date must be after check-in date.");
-    return;
-  }
+    setSearching(true);
+    setError("");
 
-  setSearched(true);
+    try {
+      const roomTypesResponse = await fetch(`${apiUrl}/room-types`);
+      if (!roomTypesResponse.ok) throw new Error("Room types could not be loaded.");
+      const roomTypes = (await roomTypesResponse.json()) as Array<{ id: string; name: string }>;
+      const selectedType = roomTypes.find((item) => item.name.toLowerCase() === roomType);
+      const params = new URLSearchParams({ checkIn, checkOut });
+      if (selectedType) params.set("roomTypeId", selectedType.id);
+
+      const availabilityResponse = await fetch(`${apiUrl}/rooms/availability?${params}`);
+      if (!availabilityResponse.ok) throw new Error("Availability could not be checked.");
+      const availability = (await availabilityResponse.json()) as Array<{
+        room_types?: { name?: string } | null;
+      }> | { rooms?: Array<{ room_types?: { name?: string } | null }> };
+      const inventory = Array.isArray(availability) ? availability : availability.rooms ?? [];
+      const liveTypeNames = new Set(
+        inventory.map((room) => room.room_types?.name?.toLowerCase()).filter(Boolean),
+      );
+      setAvailableRooms(
+        roomCatalog.filter((room) => liveTypeNames.has(room.slug) || liveTypeNames.has(room.slug.replace("-", " "))),
+      );
+      setSearched(true);
+    } catch (requestError) {
+      setError(requestError instanceof Error ? requestError.message : "Availability could not be checked.");
+      setSearched(false);
+    } finally {
+      setSearching(false);
+    }
   }
 
   return (
@@ -76,7 +108,7 @@ export default function AvailabilityPage() {
       {/* Header */}
       <header className="border-b border-black/10 bg-[#f8f6f1]">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
-          <a href="/" className="group">
+          <Link href="/" className="group">
             <h1 className="text-xl font-semibold tracking-[0.2em]">
               Valére Haven
             </h1>
@@ -84,28 +116,28 @@ export default function AvailabilityPage() {
             <p className="mt-1 text-[10px] tracking-[0.3em] text-black/50">
               HOTEL & RESORT
             </p>
-          </a>
+          </Link>
 
           <nav className="hidden items-center gap-8 text-sm md:flex">
-            <a href="/" className="hover:text-black/50">
+            <Link href="/" className="hover:text-black/50">
               Home
-            </a>
+            </Link>
 
-            <a href="/rooms" className="hover:text-black/50">
+            <Link href="/rooms" className="hover:text-black/50">
               Rooms
-            </a>
+            </Link>
 
-            <a href="/#experience" className="hover:text-black/50">
+            <Link href="/#experience" className="hover:text-black/50">
               Experience
-            </a>
+            </Link>
 
-            <a href="/#about" className="hover:text-black/50">
+            <Link href="/#about" className="hover:text-black/50">
               About
-            </a>
+            </Link>
 
-            <a href="/#contact" className="hover:text-black/50">
+            <Link href="/#contact" className="hover:text-black/50">
               Contact
-            </a>
+            </Link>
           </nav>
         </div>
       </header>
@@ -203,10 +235,17 @@ export default function AvailabilityPage() {
 
           <button
             onClick={handleSearch}
-            className="mt-8 w-full bg-[#1c1c1c] px-6 py-4 text-sm text-white transition hover:bg-black/80"
+            disabled={searching}
+            className="mt-8 w-full bg-[#1c1c1c] px-6 py-4 text-sm text-white transition hover:bg-black/80 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            Check Availability
+            {searching ? "Checking live availability..." : "Check Availability"}
           </button>
+
+          {error && (
+            <p className="mt-4 border border-[#e4b7ae] bg-[#fff7f5] px-4 py-3 text-sm text-[#a24d3c]">
+              {error}
+            </p>
+          )}
         </div>
       </section>
 
@@ -292,7 +331,7 @@ export default function AvailabilityPage() {
       guests,
     });
 
-    window.location.href = `/booking/guest-information?${params.toString()}`;
+    router.push(`/booking/guest-information?${params.toString()}`);
   }}
   className="mt-7 inline-block w-fit bg-[#1c1c1c] px-6 py-3 text-sm text-white"
 >
@@ -301,6 +340,11 @@ export default function AvailabilityPage() {
                   </div>
                 </article>
               ))}
+              {availableRooms.length === 0 && (
+                <div className="border border-dashed border-black/15 bg-white p-10 text-center text-sm text-black/50">
+                  No rooms are available for the selected dates and room type.
+                </div>
+              )}
             </div>
           </div>
         </section>

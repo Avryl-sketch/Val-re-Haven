@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 const rooms = [
   {
     slug: "standard",
@@ -93,39 +95,39 @@ export default function RoomsPage() {
     <main className="min-h-screen bg-[#f7f2ea] text-[#1f2d2b]">
       <header className="border-b border-[#1f2d2b]/10 bg-[#f7f2ea]">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
-          <a href="/" className="group">
+          <Link href="/" className="group">
             <h1 className="text-xl font-semibold tracking-[0.2em] text-[#1b2f2c]">
               Valére Haven
             </h1>
             <p className="mt-1 text-[10px] tracking-[0.3em] text-[#5d6d68]">
               HOTEL & RESORT
             </p>
-          </a>
+          </Link>
 
           <nav className="hidden items-center gap-8 text-sm md:flex">
-            <a href="/" className="text-[#3d4f4a] transition hover:text-[#1b2f2c]">
+            <Link href="/" className="text-[#3d4f4a] transition hover:text-[#1b2f2c]">
               Home
-            </a>
-            <a href="/rooms" className="font-medium text-[#1b2f2c]">
+            </Link>
+            <Link href="/rooms" className="font-medium text-[#1b2f2c]">
               Rooms
-            </a>
-            <a href="/#experience" className="text-[#3d4f4a] transition hover:text-[#1b2f2c]">
+            </Link>
+            <Link href="/#experience" className="text-[#3d4f4a] transition hover:text-[#1b2f2c]">
               Experience
-            </a>
-            <a href="/#about" className="text-[#3d4f4a] transition hover:text-[#1b2f2c]">
+            </Link>
+            <Link href="/#about" className="text-[#3d4f4a] transition hover:text-[#1b2f2c]">
               About
-            </a>
-            <a href="/#contact" className="text-[#3d4f4a] transition hover:text-[#1b2f2c]">
+            </Link>
+            <Link href="/#contact" className="text-[#3d4f4a] transition hover:text-[#1b2f2c]">
               Contact
-            </a>
-            <a href="/booking/availability" className="bg-[#163d36] px-5 py-3 text-white shadow-sm hover:bg-[#102923]">
+            </Link>
+            <Link href="/booking/availability" className="bg-[#163d36] px-5 py-3 text-white shadow-sm hover:bg-[#102923]">
               Book Now
-            </a>
+            </Link>
           </nav>
 
-          <a href="/booking/availability" className="bg-[#163d36] px-4 py-2 text-sm text-white md:hidden">
+          <Link href="/booking/availability" className="bg-[#163d36] px-4 py-2 text-sm text-white md:hidden">
             Book
-          </a>
+          </Link>
         </div>
       </header>
 
@@ -190,9 +192,9 @@ export default function RoomsPage() {
                   ))}
                 </div>
 
-                <a href={`/rooms/${room.slug}`} className="mt-8 inline-block w-fit bg-[#163d36] px-6 py-3 text-sm text-[#f7f2ea] hover:bg-[#102923]">
+                <Link href={`/rooms/${room.slug}`} className="mt-8 inline-block w-fit bg-[#163d36] px-6 py-3 text-sm text-[#f7f2ea] hover:bg-[#102923]">
                   View Room
-                </a>
+                </Link>
               </div>
             </article>
           ))}
@@ -204,9 +206,9 @@ export default function RoomsPage() {
         <h2 className="mx-auto mt-5 max-w-2xl text-4xl font-light md:text-5xl">
           Your comfortable stay starts here.
         </h2>
-        <a href="/booking/availability" className="mt-8 inline-block bg-[#f3d7a8] px-7 py-4 text-sm font-medium text-[#163d36] hover:bg-[#ebc88e]">
+        <Link href="/booking/availability" className="mt-8 inline-block bg-[#f3d7a8] px-7 py-4 text-sm font-medium text-[#163d36] hover:bg-[#ebc88e]">
           Check Availability
-        </a>
+        </Link>
       </section>
 
       <footer className="border-t border-[#1f2d2b]/10 px-6 py-12">
