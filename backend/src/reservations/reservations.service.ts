@@ -136,34 +136,52 @@ export class ReservationsService {
   }
 
   async create(dto: CreateReservationDto) {
-    this.validateDates(dto.checkIn, dto.checkOut);
+  this.validateDates(dto.checkIn, dto.checkOut);
 
-    const { data, error } = await this.client
-      .from('reservations')
-      .insert({
-        guest_id: dto.guestId,
-        room_type_id: dto.roomTypeId,
-        room_id: dto.roomId,
-        booking_type: dto.bookingType,
-        check_in: dto.checkIn,
-        check_out: dto.checkOut,
-        number_of_guests: dto.numberOfGuests,
-        status: dto.status,
-        total_amount: dto.totalAmount,
-        deposit_amount: dto.depositAmount,
-        payment_status: dto.paymentStatus,
-        notes: dto.notes,
-        special_requests: dto.specialRequests,
-      })
-      .select(this.selection)
-      .single();
+  if (dto.roomId) {
+    const available = await this.roomsService.findAvailable({
+      checkIn: dto.checkIn,
+      checkOut: dto.checkOut,
+      roomTypeId: dto.roomTypeId,
+    });
 
-    if (error) {
-      throw error;
+    const roomIsAvailable = available.rooms.some(
+      (room) => room.id === dto.roomId,
+    );
+
+    if (!roomIsAvailable) {
+      throw new BadRequestException(
+        'Selected room is not available for the reservation dates.',
+      );
     }
-
-    return data;
   }
+
+  const { data, error } = await this.client
+    .from('reservations')
+    .insert({
+      guest_id: dto.guestId,
+      room_type_id: dto.roomTypeId,
+      room_id: dto.roomId,
+      booking_type: dto.bookingType,
+      check_in: dto.checkIn,
+      check_out: dto.checkOut,
+      number_of_guests: dto.numberOfGuests,
+      status: dto.status,
+      total_amount: dto.totalAmount,
+      deposit_amount: dto.depositAmount,
+      payment_status: dto.paymentStatus,
+      notes: dto.notes,
+      special_requests: dto.specialRequests,
+    })
+    .select(this.selection)
+    .single();
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+}
 
   async update(id: string, dto: UpdateReservationDto) {
     const current = await this.getReservationRecord(id);
