@@ -10,6 +10,7 @@ const roomCatalog = [
   {
     name: "Standard Room",
     slug: "standard",
+    image: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1200&q=80",
     price: "₱3,500",
     description:
       "A comfortable room designed for a relaxing and convenient stay.",
@@ -18,6 +19,7 @@ const roomCatalog = [
   {
     name: "Superior Room",
     slug: "superior",
+    image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=1200&q=80",
     price: "₱4,500",
     description:
       "A spacious accommodation with additional space for relaxation.",
@@ -26,6 +28,7 @@ const roomCatalog = [
   {
     name: "Deluxe Room",
     slug: "deluxe",
+    image: "https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=1200&q=80",
     price: "₱6,000",
     description:
       "A refined room offering more space and premium features.",
@@ -34,6 +37,7 @@ const roomCatalog = [
   {
     name: "Executive Room",
     slug: "executive",
+    image: "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1200&q=80",
     price: "₱8,000",
     description:
       "A premium accommodation offering generous space and comfort.",
@@ -42,6 +46,7 @@ const roomCatalog = [
   {
     name: "Suite Room",
     slug: "suite",
+    image: "https://images.unsplash.com/photo-1445019980597-93fa8acb246c?auto=format&fit=crop&w=1200&q=80",
     price: "₱10,000",
     description:
       "A spacious and luxurious accommodation designed for extra comfort and privacy.",
@@ -276,12 +281,18 @@ export default function AvailabilityPage() {
                   key={room.slug}
                   className="grid overflow-hidden border border-black/10 bg-white md:grid-cols-3"
                 >
-                  {/* Image Placeholder */}
-                  <div className="flex min-h-[260px] items-center justify-center bg-[#dedbd3]">
-                    <span className="text-xs tracking-[0.25em] text-black/40">
-                      {room.name.toUpperCase()}
-                    </span>
-                  </div>
+                  {/* Room Image */}
+             <div className="relative min-h-[260px] overflow-hidden bg-[#dedbd3] md:min-h-full">
+                <img
+                  src={room.image}
+                  alt={room.name}
+                  className="absolute inset-0 h-full w-full object-cover"
+                  loading="lazy"
+                  onError={(event) => {
+                   event.currentTarget.style.display = "none";
+                  }}
+                 />
+              </div>
 
                   {/* Room Details */}
                   <div className="flex flex-col justify-center p-7 md:col-span-2 md:p-9">
