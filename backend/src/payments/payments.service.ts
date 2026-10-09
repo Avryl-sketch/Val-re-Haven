@@ -14,7 +14,7 @@ export class PaymentsService {
     return this.supabaseService.getClient();
   }
 
-  private readonly selection = '*, reservations(*, guests(*), room_types(*)), invoices(*)';
+  private readonly selection = '*, reservations(*, guests(*), room_types(*))';
 
   async findAll() {
     const { data, error } = await this.client
