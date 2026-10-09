@@ -14,4 +14,7 @@ export class CreateInvoiceItemDto {
   @IsNumber()
   @Min(0)
   unitPrice!: number;
+
+  @IsUUID()
+  idempotencyKey!: string;
 }

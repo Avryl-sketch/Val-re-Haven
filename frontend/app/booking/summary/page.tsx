@@ -5,6 +5,7 @@ import Link from "next/link";
 
 type Reservation = {
   reservationId?: string;
+  roomRate?: number | null;
   room: string;
   checkIn: string;
   checkOut: string;
@@ -35,7 +36,7 @@ const rooms = {
   },
   suite: {
     name: "Suite Room",
-    price: 10000,
+    price: null,
   },
 };
 
@@ -90,9 +91,10 @@ export default function SummaryPage() {
     difference / (1000 * 60 * 60 * 24)
   );
 
-  const roomTotal =
-    selectedRoom.price * numberOfNights;
-  const depositDue = roomTotal * 0.3;
+  const roomRate = reservation.roomRate ?? selectedRoom.price;
+  const roomSubtotal = roomRate === null ? null : roomRate * numberOfNights;
+  const vatAmount = roomSubtotal === null ? null : Math.round(roomSubtotal * 0.12 * 100) / 100;
+  const roomTotal = roomSubtotal === null || vatAmount === null ? null : roomSubtotal + vatAmount;
 
   function formatDate(date: string) {
     return new Date(date + "T00:00:00").toLocaleDateString(
@@ -407,9 +409,7 @@ export default function SummaryPage() {
                   Room per night
                 </span>
 
-                <span>
-                  ₱{selectedRoom.price.toLocaleString()}
-                </span>
+                <span>{roomRate === null ? "Price not configured" : `₱${roomRate.toLocaleString("en-PH", { minimumFractionDigits: 2 })}`}</span>
               </div>
 
               <div className="flex justify-between gap-4">
@@ -424,26 +424,24 @@ export default function SummaryPage() {
 
             </div>
 
+            <div className="mt-4 space-y-3 border-b border-black/10 pb-6 text-sm">
+              <div className="flex justify-between gap-4"><span className="text-black/50">Room subtotal</span><span>{roomSubtotal === null ? "Not available" : `₱${roomSubtotal.toLocaleString("en-PH", { minimumFractionDigits: 2 })}`}</span></div>
+              <div className="flex justify-between gap-4"><span className="text-black/50">VAT (12%)</span><span>{vatAmount === null ? "Not available" : `₱${vatAmount.toLocaleString("en-PH", { minimumFractionDigits: 2 })}`}</span></div>
+            </div>
+
             <div className="flex items-center justify-between pt-6">
 
               <span className="text-sm text-black/50">
                 Total
               </span>
 
-              <span className="text-2xl font-medium">
-                ₱{roomTotal.toLocaleString()}
-              </span>
+              <span className="text-2xl font-medium">{roomTotal === null ? "Price not configured" : `₱${roomTotal.toLocaleString("en-PH", { minimumFractionDigits: 2 })}`}</span>
 
-            </div>
-
-            <div className="mt-4 flex items-center justify-between border-t border-black/10 pt-4 text-sm">
-              <span className="text-black/50">30% deposit due</span>
-              <span className="font-medium">₱{depositDue.toLocaleString()}</span>
             </div>
 
             <p className="mt-3 text-xs leading-5 text-black/40">
-              The deposit is recorded as unpaid until a supported payment
-              provider confirms the transaction. No card details are stored.
+              Payment arrangements will be handled by hotel staff. No payment
+              is collected as part of this reservation request.
             </p>
 
             <button

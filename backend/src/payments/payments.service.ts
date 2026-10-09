@@ -2,7 +2,6 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { SupabaseService } from '../supabase/supabase.service';
 import {
   CreatePaymentDto,
-  PaymentMethod,
   PaymentRecordStatus,
 } from './dto/create-payment.dto';
 import { UpdatePaymentDto } from './dto/update-payment.dto';
@@ -15,7 +14,7 @@ export class PaymentsService {
     return this.supabaseService.getClient();
   }
 
-  private readonly selection = '*, reservations(*, guests(*), room_types(*))';
+  private readonly selection = '*, reservations(*, guests(*), room_types(*)), invoices(*)';
 
   async findAll() {
     const { data, error } = await this.client
@@ -58,95 +57,44 @@ export class PaymentsService {
     return data;
   }
 
-  async create(dto: CreatePaymentDto) {
-    const status = dto.status ?? PaymentRecordStatus.PENDING;
-    if (
-      status === PaymentRecordStatus.SUCCEEDED &&
-      ![PaymentMethod.CASH, PaymentMethod.BANK_TRANSFER].includes(dto.method)
-    ) {
-      throw new BadRequestException(
-        'External payments must be confirmed by a payment provider before settlement.',
-      );
+  async create(dto: CreatePaymentDto, actorId: string) {
+    if (!dto.idempotencyKey) {
+      throw new BadRequestException('Payment idempotency key is required.');
     }
-    const { data, error } = await this.client
-      .from('payments')
-      .insert({
-        reservation_id: dto.reservationId,
-        amount: dto.amount,
-        currency: dto.currency ?? 'PHP',
-        method: dto.method,
-        status,
-        provider: dto.provider,
-        provider_reference: dto.providerReference,
-        notes: dto.notes,
-        paid_at: status === PaymentRecordStatus.SUCCEEDED ? new Date().toISOString() : null,
-      })
-      .select(this.selection)
-      .single();
+    const { data, error } = await this.client.rpc('billing_record_payment', {
+      p_reservation_id: dto.reservationId,
+      p_invoice_id: dto.invoiceId ?? null,
+      p_amount: dto.amount,
+      p_currency: dto.currency ?? 'PHP',
+      p_method: dto.method,
+      p_status: dto.status ?? PaymentRecordStatus.PENDING,
+      p_provider: dto.provider ?? null,
+      p_provider_reference: dto.providerReference ?? null,
+      p_notes: dto.notes ?? null,
+      p_idempotency_key: dto.idempotencyKey,
+      p_actor_id: actorId,
+    });
 
     if (error) {
       throw error;
     }
-
-    if (status === PaymentRecordStatus.SUCCEEDED) {
-      await this.syncReservationPaymentStatus(dto.reservationId);
-    }
-
-    return data;
+    return this.findOne(data.id);
   }
 
-  private async syncReservationPaymentStatus(reservationId: string) {
-    const [{ data: reservation, error: reservationError }, { data: payments, error: paymentsError }] = await Promise.all([
-      this.client.from('reservations').select('total_amount').eq('id', reservationId).single(),
-      this.client.from('payments').select('amount').eq('reservation_id', reservationId).eq('status', PaymentRecordStatus.SUCCEEDED),
-    ]);
-
-    if (reservationError) throw reservationError;
-    if (paymentsError) throw paymentsError;
-
-    const paid = (payments ?? []).reduce((total, payment) => total + Number(payment.amount ?? 0), 0);
-    const paymentStatus = paid >= Number(reservation.total_amount ?? 0)
-      ? 'PAID'
-      : 'PARTIALLY_PAID';
-
-    const { error } = await this.client
-      .from('reservations')
-      .update({ payment_status: paymentStatus, updated_at: new Date().toISOString() })
-      .eq('id', reservationId);
-
-    if (error) throw error;
-  }
-
-  async update(id: string, dto: UpdatePaymentDto) {
-    const updates = {
-      ...(dto.currency !== undefined && { currency: dto.currency }),
-      ...(dto.status !== undefined && { status: dto.status }),
-      ...(dto.provider !== undefined && { provider: dto.provider }),
-      ...(dto.providerReference !== undefined && {
-        provider_reference: dto.providerReference,
-      }),
-      ...(dto.notes !== undefined && { notes: dto.notes }),
-      ...(dto.status === PaymentRecordStatus.SUCCEEDED && {
-        paid_at: new Date().toISOString(),
-      }),
-      updated_at: new Date().toISOString(),
-    };
-
-    const { data, error } = await this.client
-      .from('payments')
-      .update(updates)
-      .eq('id', id)
-      .select(this.selection)
-      .single();
+  async update(id: string, dto: UpdatePaymentDto, actorId: string) {
+    const { data, error } = await this.client.rpc('billing_update_payment', {
+      p_payment_id: id,
+      p_status: dto.status ?? null,
+      p_currency: dto.currency ?? null,
+      p_provider: dto.provider ?? null,
+      p_provider_reference: dto.providerReference ?? null,
+      p_notes: dto.notes ?? null,
+      p_actor_id: actorId,
+    });
 
     if (error) {
       throw error;
     }
-
-    if (dto.status === PaymentRecordStatus.SUCCEEDED) {
-      await this.syncReservationPaymentStatus(data.reservation_id);
-    }
-
-    return data;
+    return this.findOne(data.id);
   }
 }

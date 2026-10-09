@@ -1,5 +1,6 @@
 import {
   IsEnum,
+  IsIn,
   IsNumber,
   IsOptional,
   IsString,
@@ -27,6 +28,10 @@ export class CreatePaymentDto {
   @IsUUID()
   reservationId!: string;
 
+  @IsOptional()
+  @IsUUID()
+  invoiceId?: string;
+
   @IsNumber()
   @Min(0.01)
   amount!: number;
@@ -36,7 +41,7 @@ export class CreatePaymentDto {
   @Length(3, 3)
   currency?: string;
 
-  @IsEnum(PaymentMethod)
+  @IsIn([PaymentMethod.CASH, PaymentMethod.BANK_TRANSFER])
   method!: PaymentMethod;
 
   @IsOptional()
@@ -54,4 +59,7 @@ export class CreatePaymentDto {
   @IsOptional()
   @IsString()
   notes?: string;
+
+  @IsUUID()
+  idempotencyKey!: string;
 }

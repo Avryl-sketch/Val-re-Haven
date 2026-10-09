@@ -6,6 +6,7 @@ import {
   ParseUUIDPipe,
   Patch,
   Post,
+  Req,
   UseGuards,
 } from '@nestjs/common';
 import { CreatePaymentDto } from './dto/create-payment.dto';
@@ -15,6 +16,7 @@ import { AuthGuard } from '../auth/auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
 import { StaffRole } from '../auth/roles.enum';
+import { AuthenticatedUser } from '../auth/auth.service';
 
 @Controller('payments')
 @UseGuards(AuthGuard, RolesGuard)
@@ -40,15 +42,19 @@ export class PaymentsController {
   }
 
   @Post()
-  create(@Body() dto: CreatePaymentDto) {
-    return this.paymentsService.create(dto);
+  create(
+    @Body() dto: CreatePaymentDto,
+    @Req() request: { user?: AuthenticatedUser },
+  ) {
+    return this.paymentsService.create(dto, request.user!.id);
   }
 
   @Patch(':id')
   update(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: UpdatePaymentDto,
+    @Req() request: { user?: AuthenticatedUser },
   ) {
-    return this.paymentsService.update(id, dto);
+    return this.paymentsService.update(id, dto, request.user!.id);
   }
 }

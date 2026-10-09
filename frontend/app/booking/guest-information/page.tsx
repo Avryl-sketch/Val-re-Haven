@@ -5,6 +5,19 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, Suspense } from "react";
 
+const validIdTypes = [
+  "Philippine Passport",
+  "Driver's License",
+  "PhilSys National ID",
+  "UMID",
+  "Postal ID",
+  "Voter's ID",
+  "PRC ID",
+  "Senior Citizen ID",
+  "PWD ID",
+  "Other Government-Issued ID",
+];
+
 const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000";
 
 function GuestInformationForm() {
@@ -15,20 +28,42 @@ function GuestInformationForm() {
   const checkIn = searchParams.get("checkIn") || "";
   const checkOut = searchParams.get("checkOut") || "";
   const guests = searchParams.get("guests") || "2";
-
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [idType, setIdType] = useState("");
+  const [idNumber, setIdNumber] = useState("");
+  const [idFile, setIdFile] = useState<File | null>(null);
+  const [idError, setIdError] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [specialRequest, setSpecialRequest] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
 
-  async function handleContinue() {
-    if (!firstName || !lastName || !email || !phone) {
-      alert("Please complete all required fields.");
-      return;
-    }
+async function handleContinue() {
+  if (!firstName || !lastName || !email || !phone) {
+    alert("Please complete all required fields.");
+    return;
+  }
+
+  if (!idType) {
+    setIdError("Please select the type of valid ID.");
+    return;
+  }
+
+  if (!idNumber.trim()) {
+    setIdError("Please enter your ID number.");
+    return;
+  }
+
+  if (!idFile) {
+    setIdError("Please upload a copy of your valid ID.");
+    return;
+  }
+
+  setIdError("");
+  setError("");
+  setSubmitting(true);
 
     setError("");
     setSubmitting(true);
@@ -83,8 +118,7 @@ function GuestInformationForm() {
           checkIn,
           checkOut,
           numberOfGuests: Number(guests),
-          totalAmount: roomType.price_per_night * nights,
-          depositAmount: roomType.price_per_night * nights * 0.3,
+          totalAmount: Math.round(roomType.price_per_night * nights * 1.12 * 100) / 100,
           paymentStatus: "UNPAID",
           specialRequests: specialRequest || undefined,
         }),
@@ -96,17 +130,21 @@ function GuestInformationForm() {
       const reservation = (await reservationResponse.json()) as { id: string };
 
       const guestInformation = {
-        room,
-        checkIn,
-        checkOut,
-        guests,
-        firstName,
-        lastName,
-        email,
-        phone,
-        specialRequest,
-        reservationId: reservation.id,
-      };
+  room,
+  checkIn,
+  checkOut,
+  guests,
+  firstName,
+  lastName,
+  email,
+  phone,
+  idType,
+  idNumber,
+  idFileName: idFile.name,
+  specialRequest,
+  reservationId: reservation.id,
+  roomRate: roomType.price_per_night,
+};
 
       sessionStorage.setItem("valereReservation", JSON.stringify(guestInformation));
 
@@ -264,6 +302,138 @@ function GuestInformationForm() {
               </div>
             </div>
 
+{/* Valid Identification */}
+<div className="mt-10 border-t border-black/10 pt-10">
+  <div className="mb-6">
+    <p className="text-xs tracking-[0.25em] text-black/40">
+      IDENTIFICATION
+    </p>
+
+    <h3 className="mt-3 text-2xl font-light">
+      Valid ID
+    </h3>
+
+    <p className="mt-3 max-w-2xl text-sm leading-6 text-black/50">
+      Please provide a valid government-issued ID for hotel registration.
+    </p>
+  </div>
+
+  <div className="grid gap-6 md:grid-cols-2">
+    {/* ID Type */}
+    <div>
+      <label
+        htmlFor="idType"
+        className="text-sm text-black/60"
+      >
+        Valid ID Type *
+      </label>
+
+      <select
+        id="idType"
+        value={idType}
+        onChange={(e) => {
+          setIdType(e.target.value);
+          setIdError("");
+        }}
+        className="mt-2 w-full border border-black/15 bg-[#f8f6f1] px-4 py-3 text-sm outline-none focus:border-black/40"
+      >
+        <option value="">Select ID type</option>
+
+        {validIdTypes.map((type) => (
+          <option key={type} value={type}>
+            {type}
+          </option>
+        ))}
+      </select>
+    </div>
+
+    {/* ID Number */}
+    <div>
+      <label
+        htmlFor="idNumber"
+        className="text-sm text-black/60"
+      >
+        ID Number *
+      </label>
+
+      <input
+        id="idNumber"
+        type="text"
+        value={idNumber}
+        onChange={(e) => {
+          setIdNumber(e.target.value);
+          setIdError("");
+        }}
+        placeholder="Enter your ID number"
+        className="mt-2 w-full border border-black/15 bg-[#f8f6f1] px-4 py-3 text-sm outline-none focus:border-black/40"
+      />
+    </div>
+  </div>
+
+  {/* ID Upload */}
+  <div className="mt-6">
+    <label
+      htmlFor="idFile"
+      className="text-sm text-black/60"
+    >
+      Upload Valid ID *
+    </label>
+
+    <input
+      id="idFile"
+      type="file"
+      accept="image/jpeg,image/png,application/pdf"
+      onChange={(e) => {
+        const file = e.target.files?.[0] ?? null;
+
+        if (file && file.size > 5 * 1024 * 1024) {
+          setIdFile(null);
+          setIdError("The ID file must be 5 MB or smaller.");
+          return;
+        }
+
+        setIdFile(file);
+        setIdError("");
+      }}
+      className="mt-2 block w-full border border-black/15 bg-[#f8f6f1] text-sm file:mr-4 file:border-0 file:bg-[#1c1c1c] file:px-5 file:py-3 file:text-sm file:text-white"
+    />
+
+    <p className="mt-2 text-xs text-black/40">
+      Accepted formats: JPG, PNG, or PDF. Maximum size: 5 MB.
+    </p>
+
+    {idFile && (
+      <p className="mt-2 text-sm text-green-700">
+        Selected: {idFile.name}
+      </p>
+    )}
+  </div>
+
+  {/* ID Confirmation */}
+  <div className="mt-6 flex items-start gap-3">
+    <input
+      id="idConfirmation"
+      type="checkbox"
+      required
+      className="mt-1 h-4 w-4"
+    />
+
+    <label
+      htmlFor="idConfirmation"
+      className="text-sm leading-6 text-black/60"
+    >
+      I confirm that the identification information I provided is
+      valid and belongs to me.
+    </label>
+  </div>
+
+  {idError && (
+    <p className="mt-4 border border-[#e4b7ae] bg-[#fff7f5] px-4 py-3 text-sm text-[#a24d3c]">
+      {idError}
+    </p>
+  )}
+</div>
+
             {/* Special Request */}
             <div className="mt-6">
               <label className="text-sm text-black/60">
@@ -331,7 +501,7 @@ function GuestInformationForm() {
   );
 }
 
-export default function GuestInformationPage() {
+  export default function GuestInformationPage() {
   return (
     <Suspense
       fallback={

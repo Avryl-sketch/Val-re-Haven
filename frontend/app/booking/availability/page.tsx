@@ -282,17 +282,17 @@ export default function AvailabilityPage() {
                   className="grid overflow-hidden border border-black/10 bg-white md:grid-cols-3"
                 >
                   {/* Room Image */}
-             <div className="relative min-h-[260px] overflow-hidden bg-[#dedbd3] md:min-h-full">
-                <img
-                  src={room.image}
-                  alt={room.name}
-                  className="absolute inset-0 h-full w-full object-cover"
-                  loading="lazy"
-                  onError={(event) => {
-                   event.currentTarget.style.display = "none";
-                  }}
-                 />
-              </div>
+                  <div className="relative min-h-[260px] overflow-hidden bg-[#dedbd3] md:min-h-full">
+                   <img
+                    src={room.image}
+                    alt={room.name}
+                    className="absolute inset-0 h-full w-full object-cover"
+                    loading="lazy"
+                    onError={(event) => {
+                     event.currentTarget.style.display = "none";
+                    }}
+                   />
+                  </div>
 
                   {/* Room Details */}
                   <div className="flex flex-col justify-center p-7 md:col-span-2 md:p-9">

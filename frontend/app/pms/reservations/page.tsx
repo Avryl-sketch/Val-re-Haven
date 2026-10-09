@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 
 type Reservation = {
   id: string;
@@ -74,6 +75,7 @@ export default function PmsReservationsPage() {
   const [actionError, setActionError] = useState("");
   const [actionLoading, setActionLoading] = useState(false);
   const [paymentAmount, setPaymentAmount] = useState("");
+  const [paymentIdempotencyKey, setPaymentIdempotencyKey] = useState("");
   const [editValues, setEditValues] = useState({ checkIn: "", checkOut: "", numberOfGuests: "", bookingType: "INDIVIDUAL", notes: "", specialRequests: "" });
 
   async function loadReservations() {
@@ -109,6 +111,7 @@ export default function PmsReservationsPage() {
     if (!token) return setState("signed-out");
     setSelectedId(reservation.id);
     setActionError("");
+    setPaymentIdempotencyKey(crypto.randomUUID());
     setEditValues({
       checkIn: reservation.check_in,
       checkOut: reservation.check_out,
@@ -165,11 +168,13 @@ export default function PmsReservationsPage() {
     if (!token || !selectedId || Number(paymentAmount) <= 0) return;
     setActionLoading(true);
     setActionError("");
+    const idempotencyKey = paymentIdempotencyKey || crypto.randomUUID();
+    setPaymentIdempotencyKey(idempotencyKey);
     try {
       const response = await fetch(`${apiUrl}/payments`, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
-        body: JSON.stringify({ reservationId: selectedId, amount: Number(paymentAmount), method: "CASH", status: "SUCCEEDED" }),
+        body: JSON.stringify({ reservationId: selectedId, amount: Number(paymentAmount), method: "CASH", status: "SUCCEEDED", idempotencyKey }),
       });
       if (!response.ok) {
         const body = await response.json().catch(() => null) as { message?: string } | null;
@@ -219,10 +224,10 @@ export default function PmsReservationsPage() {
   return (
     <main className="min-h-screen bg-[#eef1f0] text-[#172522]">
       <aside className="fixed inset-y-0 left-0 hidden w-64 border-r border-[#d9e1de] bg-[#173a34] px-5 py-7 text-white lg:block">
-        <a href="/" className="block border-b border-white/15 pb-7">
+        <Link href="/" className="block border-b border-white/15 pb-7">
           <p className="text-lg font-semibold tracking-[0.14em]">VALÉRE HAVEN</p>
           <p className="mt-2 text-[10px] tracking-[0.25em] text-white/55">PROPERTY MANAGEMENT</p>
-        </a>
+        </Link>
         <nav className="mt-8 space-y-1 text-sm">
           {[
             ["Overview", "/pms"],

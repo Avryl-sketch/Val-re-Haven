@@ -138,6 +138,24 @@ export class ReservationsService {
   async create(dto: CreateReservationDto) {
   this.validateDates(dto.checkIn, dto.checkOut);
 
+    const { data: roomType, error: roomTypeError } = await this.client
+      .from('room_types')
+      .select('price_per_night')
+      .eq('id', dto.roomTypeId)
+      .single();
+
+    if (roomTypeError) throw roomTypeError;
+    if (roomType.price_per_night === null) {
+      throw new BadRequestException('This room type does not have configured pricing.');
+    }
+
+    const nights =
+      (Date.parse(`${dto.checkOut}T00:00:00Z`) -
+        Date.parse(`${dto.checkIn}T00:00:00Z`)) /
+      86_400_000;
+    const roomSubtotal = Number(roomType.price_per_night) * nights;
+    const totalAmount = Math.round(roomSubtotal * 1.12 * 100) / 100;
+
   if (dto.roomId) {
     const available = await this.roomsService.findAvailable({
       checkIn: dto.checkIn,
@@ -167,7 +185,7 @@ export class ReservationsService {
       check_out: dto.checkOut,
       number_of_guests: dto.numberOfGuests,
       status: dto.status,
-      total_amount: dto.totalAmount,
+      total_amount: totalAmount,
       deposit_amount: dto.depositAmount,
       payment_status: dto.paymentStatus,
       notes: dto.notes,
@@ -273,18 +291,12 @@ export class ReservationsService {
   async checkOut(id: string, userId?: string) {
     const { data, error } = await this.client.rpc('check_out_reservation', {
       p_reservation_id: id,
+      p_actor_id: userId ?? null,
     });
 
     if (error) {
       throw error;
     }
-
-    await this.auditService.record({
-      userId,
-      action: 'CHECK_OUT_RESERVATION',
-      entityType: 'reservation',
-      entityId: id,
-    });
 
     return data;
   }
